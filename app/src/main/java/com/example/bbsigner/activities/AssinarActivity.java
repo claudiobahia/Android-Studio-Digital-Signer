@@ -30,11 +30,12 @@ import com.example.bbsigner.classes.Screenshot;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.security.spec.ECField;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+
+//TODO only works first try, maybe caused by the version permissionsGranted.
 public class AssinarActivity extends AppCompatActivity {
 
     private Button mbtnLimpar, mbtnSalvar, mbtnCancelar;
@@ -46,7 +47,7 @@ public class AssinarActivity extends AppCompatActivity {
 
     private String DIRECTORY = Environment.getExternalStorageDirectory().getPath() + "/UserSignature/";
     private String pic_name = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-    private String StoredPath = DIRECTORY + pic_name + ".png";
+    private String StoredPath = DIRECTORY + pic_name + ".jpg";
 
 
     @Override
@@ -92,7 +93,7 @@ public class AssinarActivity extends AppCompatActivity {
                     try {
                         Bitmap bitmap = Screenshot.takescreenshotOfRootView(mSignature);
                         // Output the file
-                        File file = new File(DIRECTORY, System.currentTimeMillis() + ".jpg");
+                        File file = new File(StoredPath);
                         try {
                             outputStream = new FileOutputStream(file);
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
@@ -139,7 +140,7 @@ public class AssinarActivity extends AppCompatActivity {
             try {
                 Bitmap bitmap = Screenshot.takescreenshotOfRootView(mSignature);
                 // Output the file
-                File file = new File(DIRECTORY, System.currentTimeMillis() + ".jpg");
+                File file = new File(StoredPath);
                 try {
                     outputStream = new FileOutputStream(file);
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
