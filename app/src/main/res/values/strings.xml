@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">BBSigner</string>
+    <string name="splashDescription">Splash Art</string>
+    <string name="MainText">Bernardo Brandão e Bahia Digital Signer.\nRecebimento ou devolução de documentos registrados.</string>
+    <string name="btnNovaAssinatura">Nova assinatura</string>
+    <string name="btnListarAssinaturas">Listar assinaturas</string>
+    <string name="nome_do_atendente">Nome do Atendente</string>
+    <string name="nome_do_atendenteHINT">NOME DO ATENDENTE</string>
+    <string name="nome_da_outra_parte">Nome da outra parte</string>
+    <string name="nome_da_outra_parteHINT">NOME DA OUTRA PARTE</string>
+    <string name="descri_o_do_assunto">Descrição do assunto</string>
+    <string name="descricaoHINT">EU NOME_DA_OUTRA_PARTE CONCORDO EM...</string>
+    <string name="descricaoNovaAssinatura">Entre com os dados para a assinatura em questão</string>
+    <string name="assinar">Assinar</string>
+    <string name="assine_aqui">Assine aqui</string>
+    <string name="cancelarhint">Cancelar</string>
+    <string name="limparhint">Limpar</string>
+    <string name="salvarhint">Salvar</string>
+</resources>
