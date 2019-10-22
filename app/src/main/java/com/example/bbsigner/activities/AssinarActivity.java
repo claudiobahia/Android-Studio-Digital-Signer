@@ -84,9 +84,7 @@ public class AssinarActivity extends AppCompatActivity {
                 mSignature.clear();
                 mbtnSalvar.setEnabled(false);
             } else if (v == mbtnSalvar) {
-                Log.v("log_tag", "Panel Saved");
-                if (Build.VERSION.SDK_INT >= 23) {
-                    isStoragePermissionGranted();
+                if (!isStoragePermissionGranted()) {
                 } else {
                     view.setDrawingCacheEnabled(true);
                     OutputStream outputStream;
