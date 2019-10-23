@@ -50,7 +50,6 @@ public class AssinarActivity extends AppCompatActivity {
     private LinearLayout mContent;
     private View view;
     private signature mSignature;
-
     private String DIRECTORY = Environment.getExternalStorageDirectory().getPath() + "/UserSignature/";
     private String dataAssinatura = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
     private String StoredPath = DIRECTORY + dataAssinatura + ".jpg";
