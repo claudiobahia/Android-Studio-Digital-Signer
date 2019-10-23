@@ -26,16 +26,22 @@ import android.widget.Toast;
 
 import com.example.bbsigner.R;
 import com.example.bbsigner.classes.AssinaturaDados;
-import com.example.bbsigner.classes.AssinaturaDadosDAO;
 import com.example.bbsigner.classes.Screenshot;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+
+import static java.lang.String.format;
 
 public class AssinarActivity extends AppCompatActivity {
 
@@ -56,11 +62,15 @@ public class AssinarActivity extends AppCompatActivity {
     private String nome = getIntent().getStringExtra("atendente");
     private String outro = getIntent().getStringExtra("outro");
     private String descricao = getIntent().getStringExtra("descricao");
+    private ArrayList<AssinaturaDados> dados = new ArrayList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assinar);
+
+        dados = load(dados);
+
         mContent = findViewById(R.id.canvasLayout);
         mSignature = new signature(getApplicationContext(), null);
         mSignature.setBackgroundColor(Color.WHITE);
@@ -80,13 +90,12 @@ public class AssinarActivity extends AppCompatActivity {
         }
     }
 
-    private void salvarBanco(String nome, String outro, String descricao, String dataAssinatura) {
-        AssinaturaDadosDAO dao = new AssinaturaDadosDAO();
-        ArrayList<AssinaturaDados> dados = new ArrayList<>();
-        dados = dao.readFileCliente(dados);
-        dados.add(new AssinaturaDados(nome, outro, descricao, dataAssinatura));
-
-    }
+//    private void salvarBanco(String nome, String outro, String descricao, String dataAssinatura) {
+//        AssinaturaDadosDAO dao = new AssinaturaDadosDAO();
+//        ArrayList<AssinaturaDados> dados = new ArrayList<>();
+//        dados = dao.readFileCliente(dados);
+//        dados.add(new AssinaturaDados(nome, outro, descricao, dataAssinatura));
+//    }
 
     Button.OnClickListener onButtonClick = new Button.OnClickListener() {
         @Override
@@ -275,9 +284,66 @@ public class AssinarActivity extends AppCompatActivity {
         }
     }
 
+    public ArrayList<AssinaturaDados> load(ArrayList<AssinaturaDados> dados) {
+        FileInputStream fileInputStream = null;
+
+        try {
+            fileInputStream = openFileInput("dao.txt");
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String linha;
+            String[] strings;
+
+            while ((linha = bufferedReader.readLine())  != null){
+                strings = linha.split(";");
+                AssinaturaDados dado = new AssinaturaDados(strings[0],strings[1], strings[2],strings[3]);
+                dados.add(dado);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (fileInputStream != null) {
+                    fileInputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return dados;
+    }
+
+    public void save() {
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = openFileOutput("dao.txt", MODE_PRIVATE);
+            String string = "";
+            for (AssinaturaDados dado : dados) {
+                string += format("%s;%s;%s;%s\n", dado.getAtendente(), dado.getOutro(), dado.getDescricao(), dado.getAssinaturadir());
+            }
+            fileOutputStream.write(string.getBytes());
+            Toast.makeText(getApplicationContext(), "Saved to " + getFilesDir() + "/dao.txt", Toast.LENGTH_LONG).show();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (fileOutputStream != null) {
+                    fileOutputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Override
     protected void onDestroy() {
-        salvarBanco(nome, outro, descricao, dataAssinatura);
+        save();
         super.onDestroy();
     }
 }
