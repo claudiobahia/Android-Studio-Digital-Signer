@@ -6,13 +6,13 @@ public class AssinaturaDados {
     private String atendente;
     private String outro;
     private String descricao;
-    private Image assinatura;
+    private String assinaturadir;
 
-    public AssinaturaDados(String atendente, String outro, String descricao, Image assinatura) {
+    public AssinaturaDados(String atendente, String outro, String descricao, String assinaturadir) {
         this.atendente = atendente;
         this.outro = outro;
         this.descricao = descricao;
-        this.assinatura = assinatura;
+        this.assinaturadir = assinaturadir;
     }
 
     public String getAtendente() {
@@ -39,11 +39,11 @@ public class AssinaturaDados {
         this.descricao = descricao;
     }
 
-    public Image getAssinatura() {
-        return assinatura;
+    public String getAssinaturadir() {
+        return assinaturadir;
     }
 
-    public void setAssinatura(Image assinatura) {
-        this.assinatura = assinatura;
+    public void setAssinaturadir(String assinaturadir) {
+        this.assinaturadir = assinaturadir;
     }
 }

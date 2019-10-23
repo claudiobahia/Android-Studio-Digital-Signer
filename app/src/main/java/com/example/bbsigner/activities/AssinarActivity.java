@@ -25,20 +25,21 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.bbsigner.R;
+import com.example.bbsigner.classes.AssinaturaDados;
+import com.example.bbsigner.classes.AssinaturaDadosDAO;
 import com.example.bbsigner.classes.Screenshot;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-
-//TODO only works first try, maybe caused by the version permissionsGranted.
 public class AssinarActivity extends AppCompatActivity {
 
-    private Button mbtnLimpar, mbtnSalvar, mbtnCancelar;
+    private Button mbtnLimpar, mbtnSalvar;
     private File file;
     private LinearLayout mContent;
     private View view;
@@ -46,9 +47,15 @@ public class AssinarActivity extends AppCompatActivity {
     //private Bitmap bitmap;
 
     private String DIRECTORY = Environment.getExternalStorageDirectory().getPath() + "/UserSignature/";
-    private String pic_name = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-    private String StoredPath = DIRECTORY + pic_name + ".jpg";
+    private String dataAssinatura = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+    private String StoredPath = DIRECTORY + dataAssinatura + ".jpg";
 
+
+    // Get datas from NovaAssinatura act
+
+    private String nome = getIntent().getStringExtra("atendente");
+    private String outro = getIntent().getStringExtra("outro");
+    private String descricao = getIntent().getStringExtra("descricao");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +69,9 @@ public class AssinarActivity extends AppCompatActivity {
         mbtnLimpar = findViewById(R.id.clear);
         mbtnSalvar = findViewById(R.id.getsign);
         mbtnSalvar.setEnabled(false);
-        mbtnCancelar = findViewById(R.id.cancel);
         view = mContent;
         mbtnSalvar.setOnClickListener(onButtonClick);
         mbtnLimpar.setOnClickListener(onButtonClick);
-        mbtnCancelar.setOnClickListener(onButtonClick);
 
         // Method to create Directory, if the Directory doesn't exists
         file = new File(DIRECTORY);
@@ -75,10 +80,17 @@ public class AssinarActivity extends AppCompatActivity {
         }
     }
 
+    private void salvarBanco(String nome, String outro, String descricao, String dataAssinatura) {
+        AssinaturaDadosDAO dao = new AssinaturaDadosDAO();
+        ArrayList<AssinaturaDados> dados = new ArrayList<>();
+        dados = dao.readFileCliente(dados);
+        dados.add(new AssinaturaDados(nome, outro, descricao, dataAssinatura));
+
+    }
+
     Button.OnClickListener onButtonClick = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            // TODO Auto-generated method stub
             if (v == mbtnLimpar) {
                 Log.v("log_tag", "Panel Cleared");
                 mSignature.clear();
@@ -89,8 +101,7 @@ public class AssinarActivity extends AppCompatActivity {
                     view.setDrawingCacheEnabled(true);
                     OutputStream outputStream;
                     try {
-                        Bitmap bitmap = Screenshot.takescreenshotOfRootView(mSignature);
-                        // Output the file
+                        Bitmap bitmap = Screenshot.takescreenshotOfRootView(mContent);
                         File file = new File(StoredPath);
                         try {
                             outputStream = new FileOutputStream(file);
@@ -99,17 +110,11 @@ public class AssinarActivity extends AppCompatActivity {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    // Calling the same class
                     finish();
                 }
-            } else if (v == mbtnCancelar) {
-                Log.v("log_tag", "Panel Canceled");
-                // Calling the BillDetailsActivity
-                finish();
             }
         }
     };
@@ -136,8 +141,7 @@ public class AssinarActivity extends AppCompatActivity {
             view.setDrawingCacheEnabled(true);
             OutputStream outputStream;
             try {
-                Bitmap bitmap = Screenshot.takescreenshotOfRootView(mSignature);
-                // Output the file
+                Bitmap bitmap = Screenshot.takescreenshotOfRootView(mContent);
                 File file = new File(StoredPath);
                 try {
                     outputStream = new FileOutputStream(file);
@@ -146,11 +150,9 @@ public class AssinarActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            // Calling the same class
             finish();
         } else {
             Toast.makeText(this, "The app was not allowed to write to your storage. Hence," +
@@ -159,12 +161,10 @@ public class AssinarActivity extends AppCompatActivity {
     }
 
     public class signature extends View {
-
         private static final float STROKE_WIDTH = 5f;
         private static final float HALF_STROKE_WIDTH = STROKE_WIDTH / 2;
         private Paint paint = new Paint();
         private Path path = new Path();
-
         private float lastTouchX;
         private float lastTouchY;
         private final RectF dirtyRect = new RectF();
@@ -218,18 +218,14 @@ public class AssinarActivity extends AppCompatActivity {
             float eventX = event.getX();
             float eventY = event.getY();
             mbtnSalvar.setEnabled(true);
-
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     path.moveTo(eventX, eventY);
                     lastTouchX = eventX;
                     lastTouchY = eventY;
                     return true;
-
                 case MotionEvent.ACTION_MOVE:
-
                 case MotionEvent.ACTION_UP:
-
                     resetDirtyRect(eventX, eventY);
                     int historySize = event.getHistorySize();
                     for (int i = 0; i < historySize; i++) {
@@ -240,12 +236,10 @@ public class AssinarActivity extends AppCompatActivity {
                     }
                     path.lineTo(eventX, eventY);
                     break;
-
                 default:
                     debug("Ignored touch event: " + event.toString());
                     return false;
             }
-
             invalidate((int) (dirtyRect.left - HALF_STROKE_WIDTH),
                     (int) (dirtyRect.top - HALF_STROKE_WIDTH),
                     (int) (dirtyRect.right + HALF_STROKE_WIDTH),
@@ -253,14 +247,11 @@ public class AssinarActivity extends AppCompatActivity {
 
             lastTouchX = eventX;
             lastTouchY = eventY;
-
             return true;
         }
 
         private void debug(String string) {
-
             Log.v("log_tag", string);
-
         }
 
         private void expandDirtyRect(float historicalX, float historicalY) {
@@ -269,7 +260,6 @@ public class AssinarActivity extends AppCompatActivity {
             } else if (historicalX > dirtyRect.right) {
                 dirtyRect.right = historicalX;
             }
-
             if (historicalY < dirtyRect.top) {
                 dirtyRect.top = historicalY;
             } else if (historicalY > dirtyRect.bottom) {
@@ -283,5 +273,11 @@ public class AssinarActivity extends AppCompatActivity {
             dirtyRect.top = Math.min(lastTouchY, eventY);
             dirtyRect.bottom = Math.max(lastTouchY, eventY);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        salvarBanco(nome, outro, descricao, dataAssinatura);
+        super.onDestroy();
     }
 }

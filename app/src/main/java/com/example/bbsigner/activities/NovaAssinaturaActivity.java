@@ -34,6 +34,9 @@ public class NovaAssinaturaActivity extends AppCompatActivity {
                         !medtDescricao.getText().toString().isEmpty()) {
 
                     Intent irDesenharAssinatura = new Intent(getApplicationContext(),AssinarActivity.class);
+                    irDesenharAssinatura.putExtra("atendente", medtNomeAtendente.getText().toString());
+                    irDesenharAssinatura.putExtra("outro", medtNomeAtendente.getText().toString());
+                    irDesenharAssinatura.putExtra("descricao", medtNomeAtendente.getText().toString());
                     startActivity(irDesenharAssinatura);
 
                 }else {
