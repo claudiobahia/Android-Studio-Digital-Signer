@@ -32,15 +32,13 @@ public class NovaAssinaturaActivity extends AppCompatActivity {
                 if (!medtNomeAtendente.getText().toString().isEmpty() &&
                         !medtNomeOutro.getText().toString().isEmpty() &&
                         !medtDescricao.getText().toString().isEmpty()) {
-
-                    Intent irDesenharAssinatura = new Intent(getApplicationContext(),AssinarActivity.class);
+                    Intent irDesenharAssinatura = new Intent(getApplicationContext(), AssinarActivity.class);
                     irDesenharAssinatura.putExtra("atendente", medtNomeAtendente.getText().toString());
-                    irDesenharAssinatura.putExtra("outro", medtNomeAtendente.getText().toString());
-                    irDesenharAssinatura.putExtra("descricao", medtNomeAtendente.getText().toString());
+                    irDesenharAssinatura.putExtra("outro", medtNomeOutro.getText().toString());
+                    irDesenharAssinatura.putExtra("descricao", medtDescricao.getText().toString());
                     startActivity(irDesenharAssinatura);
-
-                }else {
-                    Toast.makeText(getApplicationContext(), "Há campos vazios!",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Há campos vazios!", Toast.LENGTH_LONG).show();
                 }
             }
         });

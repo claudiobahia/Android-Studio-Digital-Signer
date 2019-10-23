@@ -5,7 +5,7 @@ import android.view.View;
 
 public class Screenshot {
 
-    public static Bitmap takescreesnshot(View v){
+    public static Bitmap takescreesnshot(View v) {
         v.setDrawingCacheEnabled(true);
         v.buildDrawingCache(true);
         Bitmap b = Bitmap.createBitmap(v.getDrawingCache());
@@ -13,7 +13,7 @@ public class Screenshot {
         return b;
     }
 
-    public static Bitmap takescreenshotOfRootView(View v){
+    public static Bitmap takescreenshotOfRootView(View v) {
         return takescreesnshot(v.getRootView());
     }
 }

@@ -50,18 +50,11 @@ public class AssinarActivity extends AppCompatActivity {
     private LinearLayout mContent;
     private View view;
     private signature mSignature;
-    //private Bitmap bitmap;
 
     private String DIRECTORY = Environment.getExternalStorageDirectory().getPath() + "/UserSignature/";
     private String dataAssinatura = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
     private String StoredPath = DIRECTORY + dataAssinatura + ".jpg";
 
-
-    // Get datas from NovaAssinatura act
-
-    private String nome = getIntent().getStringExtra("atendente");
-    private String outro = getIntent().getStringExtra("outro");
-    private String descricao = getIntent().getStringExtra("descricao");
     private ArrayList<AssinaturaDados> dados = new ArrayList();
 
     @Override
@@ -69,7 +62,15 @@ public class AssinarActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assinar);
 
+        String nome = getIntent().getStringExtra("atendente");
+        String outro = getIntent().getStringExtra("outro");
+        String descricao = getIntent().getStringExtra("descricao");
+
         dados = load(dados);
+        AssinaturaDados dado = new AssinaturaDados(nome, outro, descricao, dataAssinatura);
+        dados.add(dado);
+        Log.v("log_dado", dado.toString());
+
 
         mContent = findViewById(R.id.canvasLayout);
         mSignature = new signature(getApplicationContext(), null);
@@ -89,13 +90,6 @@ public class AssinarActivity extends AppCompatActivity {
             file.mkdir();
         }
     }
-
-//    private void salvarBanco(String nome, String outro, String descricao, String dataAssinatura) {
-//        AssinaturaDadosDAO dao = new AssinaturaDadosDAO();
-//        ArrayList<AssinaturaDados> dados = new ArrayList<>();
-//        dados = dao.readFileCliente(dados);
-//        dados.add(new AssinaturaDados(nome, outro, descricao, dataAssinatura));
-//    }
 
     Button.OnClickListener onButtonClick = new Button.OnClickListener() {
         @Override
@@ -122,6 +116,7 @@ public class AssinarActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    save();
                     finish();
                 }
             }
@@ -162,6 +157,7 @@ public class AssinarActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            save();
             finish();
         } else {
             Toast.makeText(this, "The app was not allowed to write to your storage. Hence," +
@@ -186,30 +182,6 @@ public class AssinarActivity extends AppCompatActivity {
             paint.setStrokeJoin(Paint.Join.ROUND);
             paint.setStrokeWidth(STROKE_WIDTH);
         }
-
-//        public void save(View v, String StoredPath) {
-//            Log.v("log_tag", "Width: " + v.getWidth());
-//            Log.v("log_tag", "Height: " + v.getHeight());
-//            OutputStream outputStream;
-//
-//            try {
-//                Bitmap bitmap = Screenshot.takescreenshotOfRootView(v);
-//                // Output the file
-//
-//                File file = new File(DIRECTORY,System.currentTimeMillis() + ".jpg");
-//
-//                try {
-//                    outputStream = new FileOutputStream(file);
-//                }catch (Exception e){
-//                    e.printStackTrace();
-//                }
-//
-//                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-//
-//            } catch (Exception e) {
-//                Log.v("log_tag", e.toString());
-//            }
-//        }
 
         public void clear() {
             path.reset();
@@ -286,24 +258,32 @@ public class AssinarActivity extends AppCompatActivity {
 
     public ArrayList<AssinaturaDados> load(ArrayList<AssinaturaDados> dados) {
         FileInputStream fileInputStream = null;
-
         try {
-            fileInputStream = openFileInput("dao.txt");
+            fileInputStream = new FileInputStream(DIRECTORY + "dao.txt");
+        } catch (FileNotFoundException e) {
+            try {
+                new FileOutputStream(new File(DIRECTORY + "dao.txt"));
+                fileInputStream = new FileInputStream(DIRECTORY + "dao.txt");
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            }
+            e.printStackTrace();
+        }
+        try {
             InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             String linha;
             String[] strings;
-
-            while ((linha = bufferedReader.readLine())  != null){
+            while ((linha = bufferedReader.readLine()) != null) {
                 strings = linha.split(";");
-                AssinaturaDados dado = new AssinaturaDados(strings[0],strings[1], strings[2],strings[3]);
+                AssinaturaDados dado = new AssinaturaDados(strings[0], strings[1], strings[2], strings[3]);
                 dados.add(dado);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
                 if (fileInputStream != null) {
                     fileInputStream.close();
@@ -312,22 +292,25 @@ public class AssinarActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-
         return dados;
     }
 
     public void save() {
         FileOutputStream fileOutputStream = null;
         try {
-            fileOutputStream = openFileOutput("dao.txt", MODE_PRIVATE);
-            String string = "";
-            for (AssinaturaDados dado : dados) {
-                string += format("%s;%s;%s;%s\n", dado.getAtendente(), dado.getOutro(), dado.getDescricao(), dado.getAssinaturadir());
-            }
-            fileOutputStream.write(string.getBytes());
-            Toast.makeText(getApplicationContext(), "Saved to " + getFilesDir() + "/dao.txt", Toast.LENGTH_LONG).show();
+            fileOutputStream = new FileOutputStream(new File(DIRECTORY, "dao.txt"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        }
+        try {
+            String string = "";
+            for (AssinaturaDados dado : dados) {
+                string += format("%s;%s;%s;%s\n", dado.getAtendente(), dado.getOutro(), dado.getDescricao(), dado.getAssinaturadata());
+            }
+            if (fileOutputStream != null) {
+                fileOutputStream.write(string.getBytes());
+                Toast.makeText(getApplicationContext(), "Saved to " + DIRECTORY + "/dao.txt", Toast.LENGTH_LONG).show();
+            } else Toast.makeText(getApplicationContext(), "Deu ruim", Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -339,11 +322,5 @@ public class AssinarActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        save();
-        super.onDestroy();
     }
 }
