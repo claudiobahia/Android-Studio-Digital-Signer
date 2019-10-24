@@ -5,4 +5,5 @@
     <color name="colorAccent">#CA0F0F</color>
     <color name="splashBack">#000000</color>
     <color name="CanvasBackground">#ffffff</color>
+    <color name="lightGray">#2FDBDBDB</color>
 </resources>

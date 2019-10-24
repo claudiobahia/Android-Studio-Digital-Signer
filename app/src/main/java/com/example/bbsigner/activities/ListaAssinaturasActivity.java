@@ -4,9 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.widget.Adapter;
+import android.widget.TextView;
 
 import com.example.bbsigner.R;
 import com.example.bbsigner.classes.AdapterRecycleView;
@@ -21,12 +25,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-public class ListaAssinaturasActivity extends AppCompatActivity {
+public class ListaAssinaturasActivity extends AppCompatActivity implements AdapterRecycleView.OnNoteListener {
 
     private String DIRECTORY = Environment.getExternalStorageDirectory().getPath() + "/UserSignature/";
     private ArrayList<AssinaturaDados> dados = new ArrayList();
     private RecyclerView recyclerView;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +39,10 @@ public class ListaAssinaturasActivity extends AppCompatActivity {
         dados = load(dados);
         recyclerView = findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new AdapterRecycleView(this, dados));
+        recyclerView.setAdapter(new AdapterRecycleView(getApplicationContext(), dados, this));
+
+        TextView nAss = findViewById(R.id.txtNumeroAss);
+        nAss.setText(nAss.getText().toString() + dados.size());
     }
 
 
@@ -77,4 +85,13 @@ public class ListaAssinaturasActivity extends AppCompatActivity {
         return dados;
     }
 
+    @Override
+    public void onNoteClick(int position) {
+        Log.d("logClick", "Posição = " + position);
+        AssinaturaDados dado = dados.get(position);
+        Intent intent = new Intent(getApplicationContext(), VerAssinaturaActivity.class);
+        intent.putExtra("nomeImagem", dado.getAssinaturadata());
+        startActivity(intent);
+
+    }
 }

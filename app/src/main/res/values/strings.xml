@@ -16,4 +16,5 @@
     <string name="cancelarhint">Cancelar</string>
     <string name="limparhint">Limpar</string>
     <string name="salvarhint">Salvar</string>
+    <string name="n_mero_de_assinaturas">Número de assinaturas: </string>
 </resources>
