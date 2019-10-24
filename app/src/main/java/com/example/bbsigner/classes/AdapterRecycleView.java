@@ -6,6 +6,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,7 +18,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Objects;
 
 public class AdapterRecycleView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context context;
@@ -40,6 +41,14 @@ public class AdapterRecycleView extends RecyclerView.Adapter<RecyclerView.ViewHo
     @SuppressLint("SimpleDateFormat")
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+
+        /*
+        * ANIMAÇÃO VIEW
+        * */
+
+        ((Item) holder).linearLayout.setAnimation(AnimationUtils.loadAnimation(context,R.anim.fade_transition_anim));
+
+
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
         String datahora = "";
         Date data = null;
@@ -64,9 +73,14 @@ public class AdapterRecycleView extends RecyclerView.Adapter<RecyclerView.ViewHo
     public class Item extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView txtOutro, txtDatahora, txtDescricao;
         OnNoteListener onNoteListener;
+        private LinearLayout linearLayout;
+
 
         public Item(View itemView, OnNoteListener onNoteListener) {
             super(itemView);
+
+            linearLayout = itemView.findViewById(R.id.meuItemRecycleView);
+
             txtDatahora = itemView.findViewById(R.id.datahora);
             txtDescricao = itemView.findViewById(R.id.descricao);
             txtOutro = itemView.findViewById(R.id.outro);

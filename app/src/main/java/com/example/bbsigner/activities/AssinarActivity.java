@@ -70,7 +70,6 @@ public class AssinarActivity extends AppCompatActivity {
         dados.add(dado);
         Log.v("log_dado", dado.toString());
 
-
         mContent = findViewById(R.id.canvasLayout);
         mSignature = new signature(getApplicationContext(), null);
         mSignature.setBackgroundColor(Color.WHITE);
