@@ -55,6 +55,8 @@ public class ListaAssinaturasActivity extends AppCompatActivity implements Adapt
         nAss.setText(nAss.getText().toString() + dados.size());
         mprocurarInput = findViewById(R.id.procurarInput);
 
+        dados.add(new AssinaturaDados("teste","testest", "tsspdofmsdpmap aspd mapsdmfpasmd", "20190202_202020"));
+
         mprocurarInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -151,6 +153,8 @@ public class ListaAssinaturasActivity extends AppCompatActivity implements Adapt
     @Override
     public void onLongNoteClick(int position) {
         dados.remove(position);
+        adapterRecycleView.notifyItemRemoved(position);
+        adapterRecycleView.notifyItemRangeChanged(position,dados.size());
         save();
         Toast.makeText(getApplicationContext(), "Dado removido.", Toast.LENGTH_LONG).show();
     }
