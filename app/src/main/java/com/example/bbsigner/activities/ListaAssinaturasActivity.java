@@ -8,8 +8,11 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.Adapter;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.bbsigner.R;
@@ -30,19 +33,39 @@ public class ListaAssinaturasActivity extends AppCompatActivity implements Adapt
     private String DIRECTORY = Environment.getExternalStorageDirectory().getPath() + "/UserSignature/";
     private ArrayList<AssinaturaDados> dados = new ArrayList();
     private RecyclerView recyclerView;
+    private EditText mprocurarInput;
+    private AdapterRecycleView adapterRecycleView;
 
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_assinaturas);
+
+        adapterRecycleView = new AdapterRecycleView(getApplicationContext(), dados, this);
         dados = load(dados);
         recyclerView = findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new AdapterRecycleView(getApplicationContext(), dados, this));
+        recyclerView.setAdapter(adapterRecycleView);
 
         TextView nAss = findViewById(R.id.txtNumeroAss);
         nAss.setText(nAss.getText().toString() + dados.size());
+        mprocurarInput = findViewById(R.id.procurarInput);
+
+        mprocurarInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                adapterRecycleView.getFilter().filter(charSequence);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
     }
 
 
