@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -25,6 +27,8 @@ public class NovaAssinaturaActivity extends AppCompatActivity {
         medtNomeAtendente = findViewById(R.id.edtNomeAtendente);
         medtNomeOutro = findViewById(R.id.edtNomeOutro);
         medtDescricao = findViewById(R.id.edtDescricao);
+        medtDescricao.setRawInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
+        medtDescricao.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
         mbtnCriarAssinatura.setOnClickListener(new View.OnClickListener() {
             @Override

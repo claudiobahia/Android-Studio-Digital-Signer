@@ -11,9 +11,10 @@ import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.widget.Adapter;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.bbsigner.R;
 import com.example.bbsigner.classes.AdapterRecycleView;
@@ -28,7 +29,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-public class ListaAssinaturasActivity extends AppCompatActivity implements AdapterRecycleView.OnNoteListener {
+import static java.lang.String.format;
+
+public class ListaAssinaturasActivity extends AppCompatActivity implements AdapterRecycleView.OnNoteListener, AdapterRecycleView.OnLongNoteListener {
 
     private String DIRECTORY = Environment.getExternalStorageDirectory().getPath() + "/UserSignature/";
     private ArrayList<AssinaturaDados> dados = new ArrayList();
@@ -42,7 +45,7 @@ public class ListaAssinaturasActivity extends AppCompatActivity implements Adapt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_assinaturas);
 
-        adapterRecycleView = new AdapterRecycleView(getApplicationContext(), dados, this);
+        adapterRecycleView = new AdapterRecycleView(getApplicationContext(), dados, this, this);
         dados = load(dados);
         recyclerView = findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -108,13 +111,47 @@ public class ListaAssinaturasActivity extends AppCompatActivity implements Adapt
         return dados;
     }
 
+    public void save() {
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(new File(DIRECTORY, "dao.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            String string = "";
+            for (AssinaturaDados dado : dados) {
+                string += format("%s;%s;%s;%s\n", dado.getAtendente(), dado.getOutro(), dado.getDescricao(), dado.getAssinaturadata());
+            }
+            if (fileOutputStream != null) {
+                fileOutputStream.write(string.getBytes());
+                Toast.makeText(getApplicationContext(), "Saved to " + DIRECTORY + "dao.txt", Toast.LENGTH_LONG).show();
+            } else Toast.makeText(getApplicationContext(), "Deu ruim", Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (fileOutputStream != null) {
+                    fileOutputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Override
     public void onNoteClick(int position) {
-        Log.d("logClick", "Posição = " + position);
         AssinaturaDados dado = dados.get(position);
         Intent intent = new Intent(getApplicationContext(), VerAssinaturaActivity.class);
         intent.putExtra("nomeImagem", dado.getAssinaturadata());
         startActivity(intent);
+    }
 
+    @Override
+    public void onLongNoteClick(int position) {
+        dados.remove(position);
+        save();
+        Toast.makeText(getApplicationContext(), "Dado removido.", Toast.LENGTH_LONG).show();
     }
 }

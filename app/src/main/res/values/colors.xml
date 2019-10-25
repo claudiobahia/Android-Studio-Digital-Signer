@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#044E4E</color>
     <color name="colorAccent">#CA0F0F</color>
     <color name="splashBack">#000000</color>
+    <color name="ourGold">#DDCFB74B</color>
     <color name="CanvasBackground">#ffffff</color>
     <color name="lightGray">#2FDBDBDB</color>
 </resources>

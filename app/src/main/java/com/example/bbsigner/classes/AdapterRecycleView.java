@@ -23,19 +23,22 @@ public class AdapterRecycleView extends RecyclerView.Adapter<RecyclerView.ViewHo
     private ArrayList<AssinaturaDados> items;
     private ArrayList<AssinaturaDados> itemsFiltered;
     private OnNoteListener mOnNoteListener;
+    private OnLongNoteListener mOnLongNoteListener;
 
-    public AdapterRecycleView(Context context, ArrayList<AssinaturaDados> items, OnNoteListener onNoteListener) {
+    public AdapterRecycleView(Context context, ArrayList<AssinaturaDados> items,
+                              OnNoteListener onNoteListener, OnLongNoteListener onLongNoteListener) {
         this.context = context;
         this.items = items;
         this.mOnNoteListener = onNoteListener;
         this.itemsFiltered = items;
+        this.mOnLongNoteListener = onLongNoteListener;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View row = inflater.inflate(R.layout.custom_recycle, parent, false);
-        Item item = new Item(row,mOnNoteListener);
+        Item item = new Item(row,mOnNoteListener,mOnLongNoteListener);
         return item;
     }
 
@@ -43,12 +46,7 @@ public class AdapterRecycleView extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        /*
-        * ANIMAÇÃO VIEW
-        * */
-
         ((Item) holder).linearLayout.setAnimation(AnimationUtils.loadAnimation(context,R.anim.fade_transition_anim));
-
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
         String datahora = "";
@@ -95,7 +93,6 @@ public class AdapterRecycleView extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-
                 itemsFiltered = (ArrayList<AssinaturaDados>) filterResults.values;
                 notifyDataSetChanged();
 
@@ -103,13 +100,14 @@ public class AdapterRecycleView extends RecyclerView.Adapter<RecyclerView.ViewHo
         };
     }
 
-    public class Item extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView txtOutro, txtDatahora, txtDescricao;
-        OnNoteListener onNoteListener;
+    public class Item extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
+        private TextView txtOutro, txtDatahora, txtDescricao;
+        private OnNoteListener onNoteListener;
         private LinearLayout linearLayout;
+        private OnLongNoteListener onLongNoteListener;
 
 
-        public Item(View itemView, OnNoteListener onNoteListener) {
+        public Item(View itemView, OnNoteListener onNoteListener, OnLongNoteListener onLongNoteListener) {
             super(itemView);
 
             linearLayout = itemView.findViewById(R.id.meuItemRecycleView);
@@ -118,18 +116,30 @@ public class AdapterRecycleView extends RecyclerView.Adapter<RecyclerView.ViewHo
             txtDescricao = itemView.findViewById(R.id.descricao);
             txtOutro = itemView.findViewById(R.id.outro);
 
+            this.onLongNoteListener = onLongNoteListener;
             this.onNoteListener = onNoteListener;
 
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
             onNoteListener.onNoteClick(getAdapterPosition());
         }
+
+        @Override
+        public boolean onLongClick(View view) {
+            onLongNoteListener.onLongNoteClick(getAdapterPosition());
+            return false;
+        }
     }
 
     public interface OnNoteListener {
         void onNoteClick(int position);
+    }
+
+    public interface OnLongNoteListener{
+        void onLongNoteClick(int position);
     }
 }
