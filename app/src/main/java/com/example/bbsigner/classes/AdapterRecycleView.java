@@ -60,7 +60,7 @@ public class AdapterRecycleView extends RecyclerView.Adapter<RecyclerView.ViewHo
             e.printStackTrace();
         }
         assert data != null;
-        datahora = new SimpleDateFormat("dd:MM:yyyy-HH:mm:ss").format(data);
+        datahora = new SimpleDateFormat("dd/MM/yyyy-HH:mm:ss").format(data);
 
         ((Item) holder).txtOutro.setText(itemsFiltered.get(position).getOutro());
         ((Item) holder).txtDatahora.setText(datahora);

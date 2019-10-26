@@ -125,8 +125,7 @@ public class ListaAssinaturasActivity extends AppCompatActivity implements Adapt
             }
             if (fileOutputStream != null) {
                 fileOutputStream.write(string.getBytes());
-                Toast.makeText(getApplicationContext(), "Saved to " + DIRECTORY + "dao.txt", Toast.LENGTH_LONG).show();
-            } else Toast.makeText(getApplicationContext(), "Deu ruim", Toast.LENGTH_LONG).show();
+            } else Toast.makeText(getApplicationContext(), "Erro no salvamento, chame o suporte. 128", Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -142,10 +141,12 @@ public class ListaAssinaturasActivity extends AppCompatActivity implements Adapt
 
     @Override
     public void onNoteClick(int position) {
-        AssinaturaDados dado = dados.get(position);
-        Intent intent = new Intent(getApplicationContext(), VerAssinaturaActivity.class);
-        intent.putExtra("nomeImagem", dado.getAssinaturadata());
-        startActivity(intent);
+        if (position != -1) {
+            AssinaturaDados dado = dados.get(position);
+            Intent intent = new Intent(getApplicationContext(), VerAssinaturaActivity.class);
+            intent.putExtra("nomeImagem", dado.getAssinaturadata());
+            startActivity(intent);
+        }
     }
 
     @Override

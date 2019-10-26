@@ -5,10 +5,10 @@
     <string name="btnListarAssinaturas">Listar assinaturas</string>
     <string name="nome_do_atendenteHINT">NOME DO ATENDENTE</string>
     <string name="nome_da_outra_parteHINT">NOME DA OUTRA PARTE</string>
-    <string name="descricaoHINT">EU NOME_DA_OUTRA_PARTE CONCORDO EM...</string>
+    <string name="descricaoHINT">EU NOME_DA_OUTRA_PARTE CONCORDO EM…</string>
     <string name="descricaoNovaAssinatura">Entre com os dados para a assinatura em questão</string>
     <string name="assinar">Assinar</string>
-    <string name="assine_aqui">Assine aqui</string>
+    <string name="assine_aqui">Assine na tela</string>
     <string name="cancelarhint">Cancelar</string>
     <string name="limparhint">Limpar</string>
     <string name="salvarhint">Salvar</string>

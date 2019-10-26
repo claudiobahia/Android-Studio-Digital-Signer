@@ -33,6 +33,8 @@ public class NovaAssinaturaActivity extends AppCompatActivity {
         medtDescricao.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
         final Animation animation = AnimationUtils.loadAnimation(this, R.anim.ballooning);
+        MyBounceInterpolator interpolator = new MyBounceInterpolator(0.2, 20);
+        animation.setInterpolator(interpolator);
         medtNomeAtendente.startAnimation(animation);
         medtNomeOutro.startAnimation(animation);
         medtDescricao.startAnimation(animation);
@@ -54,6 +56,21 @@ public class NovaAssinaturaActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    class MyBounceInterpolator implements android.view.animation.Interpolator {
+        private double mAmplitude = 1;
+        private double mFrequency = 10;
+
+        MyBounceInterpolator(double amplitude, double frequency) {
+            mAmplitude = amplitude;
+            mFrequency = frequency;
+        }
+
+        public float getInterpolation(float time) {
+            return (float) (-1 * Math.pow(Math.E, -time/ mAmplitude) *
+                    Math.cos(mFrequency * time) + 1);
+        }
     }
 
 }

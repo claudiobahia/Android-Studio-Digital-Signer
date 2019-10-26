@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.bbsigner.R;
@@ -51,8 +52,10 @@ public class AssinarActivity extends AppCompatActivity {
     private View view;
     private signature mSignature;
     private String DIRECTORY = Environment.getExternalStorageDirectory().getPath() + "/UserSignature/";
-    private String dataAssinatura = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+    private Date date = new Date();
+    private String dataAssinatura = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(date);
     private String StoredPath = DIRECTORY + dataAssinatura + ".jpg";
+    private TextView mtxtData;
 
     private ArrayList<AssinaturaDados> dados = new ArrayList();
 
@@ -61,9 +64,12 @@ public class AssinarActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assinar);
 
+
         String nome = getIntent().getStringExtra("atendente");
         String outro = getIntent().getStringExtra("outro");
         String descricao = getIntent().getStringExtra("descricao");
+        mtxtData = findViewById(R.id.txtDataAss);
+        mtxtData.setText(new SimpleDateFormat("dd/MM/yyyy-HH:mm:ss").format(date));
 
         dados = load(dados);
         AssinaturaDados dado = new AssinaturaDados(nome, outro, descricao, dataAssinatura);
