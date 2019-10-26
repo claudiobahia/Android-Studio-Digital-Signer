@@ -10,8 +10,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,7 +53,7 @@ public class ListaAssinaturasActivity extends AppCompatActivity implements Adapt
         nAss.setText(nAss.getText().toString() + dados.size());
         mprocurarInput = findViewById(R.id.procurarInput);
 
-        dados.add(new AssinaturaDados("teste","testest", "tsspdofmsdpmap aspd mapsdmfpasmd", "20190202_202020"));
+        dados.add(new AssinaturaDados("teste", "testest", "tsspdofmsdpmap aspd mapsdmfpasmd", "20190202_202020"));
 
         mprocurarInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -154,7 +152,7 @@ public class ListaAssinaturasActivity extends AppCompatActivity implements Adapt
     public void onLongNoteClick(int position) {
         dados.remove(position);
         adapterRecycleView.notifyItemRemoved(position);
-        adapterRecycleView.notifyItemRangeChanged(position,dados.size());
+        adapterRecycleView.notifyItemRangeChanged(position, dados.size());
         save();
         Toast.makeText(getApplicationContext(), "Dado removido.", Toast.LENGTH_LONG).show();
     }

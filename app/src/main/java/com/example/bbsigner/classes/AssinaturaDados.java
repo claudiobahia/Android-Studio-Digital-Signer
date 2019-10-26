@@ -1,7 +1,5 @@
 package com.example.bbsigner.classes;
 
-import androidx.annotation.NonNull;
-
 public class AssinaturaDados {
     private String atendente;
     private String outro;

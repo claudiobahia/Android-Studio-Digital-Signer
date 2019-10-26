@@ -11,8 +11,11 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.bbsigner.R;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,7 +41,7 @@ public class AdapterRecycleView extends RecyclerView.Adapter<RecyclerView.ViewHo
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View row = inflater.inflate(R.layout.custom_recycle, parent, false);
-        Item item = new Item(row,mOnNoteListener,mOnLongNoteListener);
+        Item item = new Item(row, mOnNoteListener, mOnLongNoteListener);
         return item;
     }
 
@@ -46,7 +49,7 @@ public class AdapterRecycleView extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        ((Item) holder).linearLayout.setAnimation(AnimationUtils.loadAnimation(context,R.anim.fade_transition_anim));
+        ((Item) holder).linearLayout.setAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_transition_anim));
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
         String datahora = "";
@@ -75,12 +78,12 @@ public class AdapterRecycleView extends RecyclerView.Adapter<RecyclerView.ViewHo
             @Override
             protected FilterResults performFiltering(CharSequence charSequence) {
                 String Key = charSequence.toString();
-                if (Key.isEmpty()){
+                if (Key.isEmpty()) {
                     itemsFiltered = items;
-                }else {
+                } else {
                     ArrayList<AssinaturaDados> listFiltered = new ArrayList<>();
-                    for (AssinaturaDados dado : items){
-                        if (dado.getOutro().toLowerCase().contains(Key.toLowerCase())){
+                    for (AssinaturaDados dado : items) {
+                        if (dado.getOutro().toLowerCase().contains(Key.toLowerCase())) {
                             listFiltered.add(dado);
                         }
                     }
@@ -100,7 +103,7 @@ public class AdapterRecycleView extends RecyclerView.Adapter<RecyclerView.ViewHo
         };
     }
 
-    public class Item extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
+    public class Item extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private TextView txtOutro, txtDatahora, txtDescricao;
         private OnNoteListener onNoteListener;
         private LinearLayout linearLayout;
@@ -139,7 +142,7 @@ public class AdapterRecycleView extends RecyclerView.Adapter<RecyclerView.ViewHo
         void onNoteClick(int position);
     }
 
-    public interface OnLongNoteListener{
+    public interface OnLongNoteListener {
         void onLongNoteClick(int position);
     }
 }

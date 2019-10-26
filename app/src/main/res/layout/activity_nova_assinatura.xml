@@ -52,8 +52,8 @@
         android:gravity="top"
         android:hint="@string/descricaoHINT"
         android:inputType="textMultiLine"
-        android:minLines="5"
         android:maxLines="5"
+        android:minLines="5"
         android:padding="5sp"
         android:textSize="25sp" />
 

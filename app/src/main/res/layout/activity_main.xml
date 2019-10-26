@@ -4,14 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTint="#FFFFFF"
     tools:context=".activities.MainActivity">
 
     <Button
         android:id="@+id/btnIrListaAssinaturas"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="50sp"
         android:layout_marginTop="32dp"
+        android:background="@drawable/button_shape"
         android:text="@string/btnListarAssinaturas"
+        android:textColor="@color/ourGold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnNovaAssinatura" />
@@ -20,21 +24,55 @@
         android:id="@+id/btnNovaAssinatura"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="50sp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/button_shape"
         android:text="@string/btnNovaAssinatura"
+        android:textColor="@color/ourGold"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/splash_border_tv"
+        android:shadowColor="@color/colorPrimary"
+        android:shadowDx="12"
+        android:shadowDy="12"
+        android:shadowRadius="16"
+        android:text="@string/app_name"
+        android:textAlignment="center"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/imageView3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="208dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="64dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logobb" />
+
     <TextView
-        android:textSize="20sp"
-        android:textAlignment="center"
-        android:id="@+id/textView2"
+        android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/MainText"
-        app:layout_constraintBottom_toTopOf="@+id/btnNovaAssinatura"
+        android:layout_marginTop="8dp"
+        android:text="@string/a"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 </androidx.constraintlayout.widget.ConstraintLayout>

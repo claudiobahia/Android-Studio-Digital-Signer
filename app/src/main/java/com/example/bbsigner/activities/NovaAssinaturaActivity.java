@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,6 +32,12 @@ public class NovaAssinaturaActivity extends AppCompatActivity {
         medtDescricao.setRawInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
         medtDescricao.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
+        final Animation animation = AnimationUtils.loadAnimation(this, R.anim.ballooning);
+        medtNomeAtendente.startAnimation(animation);
+        medtNomeOutro.startAnimation(animation);
+        medtDescricao.startAnimation(animation);
+        mbtnCriarAssinatura.startAnimation(animation);
+
         mbtnCriarAssinatura.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -47,4 +55,5 @@ public class NovaAssinaturaActivity extends AppCompatActivity {
             }
         });
     }
+
 }
