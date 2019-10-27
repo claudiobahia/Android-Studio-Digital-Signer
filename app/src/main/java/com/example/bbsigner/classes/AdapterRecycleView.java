@@ -72,6 +72,11 @@ public class AdapterRecycleView extends RecyclerView.Adapter<RecyclerView.ViewHo
         return itemsFiltered.size();
     }
 
+
+    public ArrayList<AssinaturaDados> novoArray(){
+        return itemsFiltered;
+    }
+
     @Override
     public Filter getFilter() {
         return new Filter() {

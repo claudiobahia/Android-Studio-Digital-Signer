@@ -36,6 +36,7 @@ public class ListaAssinaturasActivity extends AppCompatActivity implements Adapt
     private RecyclerView recyclerView;
     private EditText mprocurarInput;
     private AdapterRecycleView adapterRecycleView;
+    private TextView nAss;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -43,14 +44,14 @@ public class ListaAssinaturasActivity extends AppCompatActivity implements Adapt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_assinaturas);
 
-        adapterRecycleView = new AdapterRecycleView(getApplicationContext(), dados, this, this);
         dados = load(dados);
+        adapterRecycleView = new AdapterRecycleView(getApplicationContext(), dados, this, this);
         recyclerView = findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapterRecycleView);
 
-        TextView nAss = findViewById(R.id.txtNumeroAss);
-        nAss.setText(nAss.getText().toString() + dados.size());
+        nAss = findViewById(R.id.txtNumeroAss);
+        ajustarNAss();
         mprocurarInput = findViewById(R.id.procurarInput);
 
         dados.add(new AssinaturaDados("teste", "testest", "tsspdofmsdpmap aspd mapsdmfpasmd", "20190202_202020"));
@@ -71,6 +72,9 @@ public class ListaAssinaturasActivity extends AppCompatActivity implements Adapt
         });
     }
 
+    protected void ajustarNAss(){
+        nAss.setText(String.format("%s%d", getString(R.string.nAss), dados.size()));
+    }
 
     public ArrayList<AssinaturaDados> load(ArrayList<AssinaturaDados> dados) {
         FileInputStream fileInputStream = null;
@@ -125,7 +129,8 @@ public class ListaAssinaturasActivity extends AppCompatActivity implements Adapt
             }
             if (fileOutputStream != null) {
                 fileOutputStream.write(string.getBytes());
-            } else Toast.makeText(getApplicationContext(), "Erro no salvamento, chame o suporte. 128", Toast.LENGTH_LONG).show();
+            } else
+                Toast.makeText(getApplicationContext(), "Erro no salvamento, chame o suporte. 128", Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -139,19 +144,41 @@ public class ListaAssinaturasActivity extends AppCompatActivity implements Adapt
         }
     }
 
+    protected void onNoteClickIntent(AssinaturaDados dado) {
+        Intent intent = new Intent(getApplicationContext(), VerAssinaturaActivity.class);
+        intent.putExtra("nomeImagem", dado.getAssinaturadata());
+        startActivity(intent);
+    }
+
     @Override
     public void onNoteClick(int position) {
-        if (position != -1) {
-            AssinaturaDados dado = dados.get(position);
-            Intent intent = new Intent(getApplicationContext(), VerAssinaturaActivity.class);
-            intent.putExtra("nomeImagem", dado.getAssinaturadata());
-            startActivity(intent);
+        String procurando = mprocurarInput.getText().toString();
+        if (!procurando.isEmpty()) {
+            if (position != -1) {
+                ArrayList<AssinaturaDados> novoArr = adapterRecycleView.novoArray();
+                AssinaturaDados dado = novoArr.get(position);
+                onNoteClickIntent(dado);
+            }
+        } else {
+            if (position != -1) {
+                AssinaturaDados dado = dados.get(position);
+                onNoteClickIntent(dado);
+            }
         }
     }
 
     @Override
     public void onLongNoteClick(int position) {
-        dados.remove(position);
+        String procurando = mprocurarInput.getText().toString();
+        if (!procurando.isEmpty()) {
+            ArrayList<AssinaturaDados> novoArr = adapterRecycleView.novoArray();
+            AssinaturaDados dado = novoArr.get(position);
+            dados.remove(dado);
+        } else {
+            dados.remove(position);
+        }
+        mprocurarInput.setText("");
+        ajustarNAss();
         adapterRecycleView.notifyItemRemoved(position);
         adapterRecycleView.notifyItemRangeChanged(position, dados.size());
         save();
