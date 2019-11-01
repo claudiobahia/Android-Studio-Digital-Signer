@@ -11,3 +11,6 @@ functional to my office starts to use it as a real deal.</p>
 <p>The sign screen will be screenshotted to get current date time from the cellphone, just incase something judicial happens.</p>
 <p>The database will be at a .txt file where the line will store all informations and the image dir.</p>
 <p>The app will also list client names and inside of it will be the rest of the information.</p>
+
+# How do I install it?
+<p>Justing cloning the applicantion will solve that problem, the only thing you need to do is to connect it to your own Firebase.</p>
