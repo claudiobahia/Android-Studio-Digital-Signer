@@ -200,7 +200,7 @@ public class ListaAssinaturasActivity extends AppCompatActivity implements Adapt
         mDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
+                dados.clear();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     AssinaturaDados dado = new AssinaturaDados(postSnapshot.child("atendente").getValue().toString(),
                             postSnapshot.child("cliente").getValue().toString(),
