@@ -28,6 +28,8 @@ import android.widget.Toast;
 import com.example.bbsigner.R;
 import com.example.bbsigner.classes.AssinaturaDados;
 import com.example.bbsigner.classes.Screenshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -40,7 +42,9 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import static java.lang.String.format;
 
@@ -58,13 +62,18 @@ public class AssinarActivity extends AppCompatActivity {
     private TextView mtxtData;
 
     private ArrayList<AssinaturaDados> dados = new ArrayList();
+    private AssinaturaDados dado;
+
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mDatabaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assinar);
 
-
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+/*
         String nome = getIntent().getStringExtra("atendente");
         String outro = getIntent().getStringExtra("outro");
         String descricao = getIntent().getStringExtra("descricao");
@@ -72,14 +81,13 @@ public class AssinarActivity extends AppCompatActivity {
         mtxtData.setText(new SimpleDateFormat("dd/MM/yyyy-HH:mm:ss").format(date));
 
         dados = load(dados);
-        AssinaturaDados dado = new AssinaturaDados(nome, outro, descricao, dataAssinatura);
+        dado = new AssinaturaDados(nome, outro, descricao, dataAssinatura);
         dados.add(dado);
         Log.v("log_dado", dado.toString());
-
+*/
         mContent = findViewById(R.id.canvasLayout);
         mSignature = new signature(getApplicationContext(), null);
         mSignature.setBackgroundColor(Color.WHITE);
-        // Dynamically generating Layout through java code
         mContent.addView(mSignature, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         mbtnLimpar = findViewById(R.id.clear);
         mbtnSalvar = findViewById(R.id.getsign);
@@ -88,7 +96,6 @@ public class AssinarActivity extends AppCompatActivity {
         mbtnSalvar.setOnClickListener(onButtonClick);
         mbtnLimpar.setOnClickListener(onButtonClick);
 
-        // Method to create Directory, if the Directory doesn't exists
         file = new File(DIRECTORY);
         if (!file.exists()) {
             file.mkdir();
@@ -103,6 +110,7 @@ public class AssinarActivity extends AppCompatActivity {
                 mSignature.clear();
                 mbtnSalvar.setEnabled(false);
             } else if (v == mbtnSalvar) {
+                saveFirebase();
                 if (!isStoragePermissionGranted()) {
                 } else {
                     view.setDrawingCacheEnabled(true);
@@ -120,7 +128,7 @@ public class AssinarActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    save();
+                    //save();
                     finish();
                 }
             }
@@ -138,34 +146,6 @@ public class AssinarActivity extends AppCompatActivity {
             }
         } else {
             return true;
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-            view.setDrawingCacheEnabled(true);
-            OutputStream outputStream;
-            try {
-                Bitmap bitmap = Screenshot.takescreenshotOfRootView(mContent);
-                File file = new File(StoredPath);
-                try {
-                    outputStream = new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-                    Toast.makeText(getApplicationContext(), "Successfully Saved", Toast.LENGTH_SHORT).show();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            save();
-            finish();
-        } else {
-            Toast.makeText(this, "The app was not allowed to write to your storage. Hence," +
-                    " it cannot function properly. Please consider granting it this permission", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -326,5 +306,21 @@ public class AssinarActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void saveFirebase() {
+        String atendente = dado.getAtendente();
+        String outro = dado.getOutro();
+        String descricao = dado.getDescricao();
+        String assinaturadata = dado.getAssinaturadata();
+        mDatabaseReference = mFirebaseDatabase.getReference("assinaturas");
+        DatabaseReference assinaturasRef = mDatabaseReference.child(assinaturadata);
+        Map<String, Object> novaAssinatura = new HashMap<>();
+        novaAssinatura.put("atendente", atendente);
+        novaAssinatura.put("cliente", outro);
+        novaAssinatura.put("descricao", descricao);
+        novaAssinatura.put("assinaturadata", assinaturadata);
+
+        assinaturasRef.updateChildren(novaAssinatura);
     }
 }

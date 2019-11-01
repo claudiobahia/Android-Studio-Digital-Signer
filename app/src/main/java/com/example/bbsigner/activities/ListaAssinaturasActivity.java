@@ -1,5 +1,6 @@
 package com.example.bbsigner.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +18,11 @@ import android.widget.Toast;
 import com.example.bbsigner.R;
 import com.example.bbsigner.classes.AdapterRecycleView;
 import com.example.bbsigner.classes.AssinaturaDados;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -37,6 +43,8 @@ public class ListaAssinaturasActivity extends AppCompatActivity implements Adapt
     private EditText mprocurarInput;
     private AdapterRecycleView adapterRecycleView;
     private TextView nAss;
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mDatabaseReference;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -44,17 +52,19 @@ public class ListaAssinaturasActivity extends AppCompatActivity implements Adapt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_assinaturas);
 
-        dados = load(dados);
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mDatabaseReference = mFirebaseDatabase.getReference("assinaturas");
+
+        //dados = load(dados);
+        dados = loadFirebase();
+
         adapterRecycleView = new AdapterRecycleView(getApplicationContext(), dados, this, this);
         recyclerView = findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapterRecycleView);
 
         nAss = findViewById(R.id.txtNumeroAss);
-        ajustarNAss();
         mprocurarInput = findViewById(R.id.procurarInput);
-
-        dados.add(new AssinaturaDados("teste", "testest", "tsspdofmsdpmap aspd mapsdmfpasmd", "20190202_202020"));
 
         mprocurarInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -72,7 +82,7 @@ public class ListaAssinaturasActivity extends AppCompatActivity implements Adapt
         });
     }
 
-    protected void ajustarNAss(){
+    protected void ajustarNAss() {
         nAss.setText(String.format("%s%d", getString(R.string.nAss), dados.size()));
     }
 
@@ -181,7 +191,38 @@ public class ListaAssinaturasActivity extends AppCompatActivity implements Adapt
         ajustarNAss();
         adapterRecycleView.notifyItemRemoved(position);
         adapterRecycleView.notifyItemRangeChanged(position, dados.size());
-        save();
+        //save();
         Toast.makeText(getApplicationContext(), "Dado removido.", Toast.LENGTH_LONG).show();
+    }
+
+    private ArrayList<AssinaturaDados> loadFirebase() {
+        final ArrayList<AssinaturaDados> array = new ArrayList<>();
+        mDatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    AssinaturaDados dado = new AssinaturaDados(postSnapshot.child("atendente").getValue().toString(),
+                            postSnapshot.child("cliente").getValue().toString(),
+                            postSnapshot.child("descricao").getValue().toString(),
+                            postSnapshot.child("assinaturadata").getValue().toString());
+                    array.add(dado);
+                }
+
+                adapterRecycleView.notifyItemInserted(dados.size());
+                adapterRecycleView.notifyItemRangeChanged(dados.size(), dados.size());
+
+                if (dados.size() == 0) {
+                    Toast.makeText(getApplicationContext(), "EMPTY FIREBASE DATABASE!", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        return array;
     }
 }
