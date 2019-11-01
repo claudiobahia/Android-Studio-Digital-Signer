@@ -11,7 +11,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,12 +47,15 @@ public class ListaAssinaturasActivity extends AppCompatActivity implements Adapt
     private TextView nAss;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mDatabaseReference;
+    private ProgressBar progressBar;
 
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_assinaturas);
+
+        progressBar = findViewById(R.id.progressBar);
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mFirebaseDatabase.getReference("assinaturas");
@@ -140,7 +145,7 @@ public class ListaAssinaturasActivity extends AppCompatActivity implements Adapt
             if (fileOutputStream != null) {
                 fileOutputStream.write(string.getBytes());
             } else
-                Toast.makeText(getApplicationContext(), "Erro no salvamento, chame o suporte. 128", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Erro no salvamento, chame o suporte. 128", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -180,42 +185,51 @@ public class ListaAssinaturasActivity extends AppCompatActivity implements Adapt
     @Override
     public void onLongNoteClick(int position) {
         String procurando = mprocurarInput.getText().toString();
+        AssinaturaDados dado1;
+        int posicaoreal;
         if (!procurando.isEmpty()) {
             ArrayList<AssinaturaDados> novoArr = adapterRecycleView.novoArray();
             AssinaturaDados dado = novoArr.get(position);
+            dado1 = dado;
+            posicaoreal = dados.indexOf(dado);
             dados.remove(dado);
         } else {
+            posicaoreal = position;
+            dado1 = dados.get(posicaoreal);
             dados.remove(position);
         }
+        adapterRecycleView.notifyItemRemoved(posicaoreal);
+        adapterRecycleView.notifyItemRangeChanged(posicaoreal, dados.size());
+        mDatabaseReference.child(dado1.getAssinaturadata()).removeValue();
         mprocurarInput.setText("");
         ajustarNAss();
-        adapterRecycleView.notifyItemRemoved(position);
-        adapterRecycleView.notifyItemRangeChanged(position, dados.size());
         //save();
-        Toast.makeText(getApplicationContext(), "Dado removido.", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Dado removido.", Toast.LENGTH_SHORT).show();
     }
 
     private ArrayList<AssinaturaDados> loadFirebase() {
-        final ArrayList<AssinaturaDados> array = new ArrayList<>();
         mDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                progressBar.setVisibility(View.VISIBLE);
                 dados.clear();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    AssinaturaDados dado = new AssinaturaDados(postSnapshot.child("atendente").getValue().toString(),
-                            postSnapshot.child("cliente").getValue().toString(),
+                    AssinaturaDados dado = new AssinaturaDados(postSnapshot.child("assinaturadata").getValue().toString(),
+                            postSnapshot.child("outro").getValue().toString(),
                             postSnapshot.child("descricao").getValue().toString(),
                             postSnapshot.child("assinaturadata").getValue().toString());
-                    array.add(dado);
+                    dados.add(dado);
+                    adapterRecycleView.notifyItemInserted(dados.indexOf(dado));
+                    adapterRecycleView.notifyItemRangeChanged(dados.indexOf(dado), dados.size());
                 }
 
-                adapterRecycleView.notifyItemInserted(dados.size());
-                adapterRecycleView.notifyItemRangeChanged(dados.size(), dados.size());
                 ajustarNAss();
 
                 if (dados.size() == 0) {
-                    Toast.makeText(getApplicationContext(), "EMPTY FIREBASE DATABASE!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "EMPTY FIREBASE DATABASE!", Toast.LENGTH_SHORT).show();
                 }
+
+                progressBar.setVisibility(View.INVISIBLE);
             }
 
             @Override
@@ -224,6 +238,6 @@ public class ListaAssinaturasActivity extends AppCompatActivity implements Adapt
             }
         });
 
-        return array;
+        return dados;
     }
 }

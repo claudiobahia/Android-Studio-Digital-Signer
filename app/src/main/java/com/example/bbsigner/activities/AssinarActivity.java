@@ -42,9 +42,7 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import static java.lang.String.format;
 
@@ -73,18 +71,20 @@ public class AssinarActivity extends AppCompatActivity {
         setContentView(R.layout.activity_assinar);
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-/*
+
         String nome = getIntent().getStringExtra("atendente");
         String outro = getIntent().getStringExtra("outro");
         String descricao = getIntent().getStringExtra("descricao");
         mtxtData = findViewById(R.id.txtDataAss);
         mtxtData.setText(new SimpleDateFormat("dd/MM/yyyy-HH:mm:ss").format(date));
 
-        dados = load(dados);
+        //dados = load(dados);
         dado = new AssinaturaDados(nome, outro, descricao, dataAssinatura);
+        /*
         dados.add(dado);
         Log.v("log_dado", dado.toString());
-*/
+         */
+
         mContent = findViewById(R.id.canvasLayout);
         mSignature = new signature(getApplicationContext(), null);
         mSignature.setBackgroundColor(Color.WHITE);
@@ -293,8 +293,8 @@ public class AssinarActivity extends AppCompatActivity {
             }
             if (fileOutputStream != null) {
                 fileOutputStream.write(string.getBytes());
-                Toast.makeText(getApplicationContext(), "Saved to " + DIRECTORY + "/dao.txt", Toast.LENGTH_LONG).show();
-            } else Toast.makeText(getApplicationContext(), "Deu ruim", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Saved to " + DIRECTORY + "dao.txt", Toast.LENGTH_SHORT).show();
+            } else Toast.makeText(getApplicationContext(), "Deu ruim", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -309,18 +309,8 @@ public class AssinarActivity extends AppCompatActivity {
     }
 
     private void saveFirebase() {
-        String atendente = dado.getAtendente();
-        String outro = dado.getOutro();
-        String descricao = dado.getDescricao();
-        String assinaturadata = dado.getAssinaturadata();
         mDatabaseReference = mFirebaseDatabase.getReference("assinaturas");
-        DatabaseReference assinaturasRef = mDatabaseReference.child(assinaturadata);
-        Map<String, Object> novaAssinatura = new HashMap<>();
-        novaAssinatura.put("atendente", atendente);
-        novaAssinatura.put("cliente", outro);
-        novaAssinatura.put("descricao", descricao);
-        novaAssinatura.put("assinaturadata", assinaturadata);
-
-        assinaturasRef.updateChildren(novaAssinatura);
+        DatabaseReference assinaturasRef = mDatabaseReference.child(dado.getAssinaturadata());
+        assinaturasRef.setValue(dado);
     }
 }
