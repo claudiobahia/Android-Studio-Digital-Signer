@@ -13,4 +13,4 @@ functional to my office starts to use it as a real deal.</p>
 <p>The app will also list client names and inside of it will be the rest of the information.</p>
 
 # How do I install it?
-<p>Justing cloning the applicantion will solve that problem, the only thing you need to do is to connect it to your own Firebase.</p>
+<p>Just cloning the application will solve that problem, the only thing you need to do is to connect it to your own Firebase.</p>
