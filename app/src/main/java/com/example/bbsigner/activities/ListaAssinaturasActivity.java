@@ -211,6 +211,7 @@ public class ListaAssinaturasActivity extends AppCompatActivity implements Adapt
 
                 adapterRecycleView.notifyItemInserted(dados.size());
                 adapterRecycleView.notifyItemRangeChanged(dados.size(), dados.size());
+                ajustarNAss();
 
                 if (dados.size() == 0) {
                     Toast.makeText(getApplicationContext(), "EMPTY FIREBASE DATABASE!", Toast.LENGTH_LONG).show();
