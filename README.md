@@ -4,7 +4,7 @@
 # Why am I making this?
 <p>I'm doing this because I like mobile apps and I want to improve my skills at it. I'm creating
 it with a really short time to delevopment, it will be hard but in 3 weeks it will be completed and
-functional to my office starts to use it as a real deal.</p>
+functional to my office starts to use it as a real deal. (Did it!)</p>
 
 # What does it do?
 <p>BBSigner will store the employee name, our client name and the description of why is the client signing it.</p>
