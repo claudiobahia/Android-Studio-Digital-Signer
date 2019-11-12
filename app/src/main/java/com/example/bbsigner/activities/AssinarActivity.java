@@ -58,6 +58,7 @@ public class AssinarActivity extends AppCompatActivity {
     private String dataAssinatura = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(date);
     private String StoredPath = DIRECTORY + dataAssinatura + ".jpg";
     private TextView mtxtData;
+    private TextView mtxtAtendente;
 
     private ArrayList<AssinaturaDados> dados = new ArrayList();
     private AssinaturaDados dado;
@@ -76,7 +77,9 @@ public class AssinarActivity extends AppCompatActivity {
         String outro = getIntent().getStringExtra("outro");
         String descricao = getIntent().getStringExtra("descricao");
         mtxtData = findViewById(R.id.txtDataAss);
-        mtxtData.setText(new SimpleDateFormat("dd/MM/yyyy-HH:mm:ss").format(date));
+        mtxtAtendente = findViewById(R.id.txtAtendenteAss);
+        mtxtData.setText("Data de assinatura: " + new SimpleDateFormat("dd/MM/yyyy-HH:mm:ss").format(date));
+        mtxtAtendente.setText("Nome do atendente: " + nome);
 
         //dados = load(dados);
         dado = new AssinaturaDados(nome, outro, descricao, dataAssinatura);
