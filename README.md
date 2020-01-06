@@ -1,5 +1,5 @@
 # Android-Studio-Digital-Signer
-<p><b>I'm developing a Digital Sign application to turn thing easier at my current job.</b></p>
+<p><b>I'm developing a Digital Sign application.</b></p>
 
 # Why am I making this?
 <p>I'm doing this because I like mobile apps and I want to improve my skills at it. I'm creating
@@ -13,4 +13,4 @@ functional to my office starts to use it as a real deal. (I did it!)</p>
 <p>The app will also list client names and inside of it will be the rest of the information.</p>
 
 # How do I install it?
-<p>Just cloning the application will solve that problem, the only thing you need to do is to connect it to your own Firebase.</p>
+<p>Just cloning the application will solve that problem, the only thing you need to do is to connect it to your own Firebase Realtime Databse.</p>
