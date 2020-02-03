@@ -1,11 +1,13 @@
 package com.example.bbsigner.activities;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -183,29 +185,46 @@ public class ListaAssinaturasActivity extends AppCompatActivity implements Adapt
     }
 
     @Override
-    public void onLongNoteClick(int position) {
-        String procurando = mprocurarInput.getText().toString();
-        AssinaturaDados dado1;
-        int posicaoreal;
-        if (!procurando.isEmpty()) {
-            ArrayList<AssinaturaDados> novoArr = adapterRecycleView.novoArray();
-            AssinaturaDados dado = novoArr.get(position);
-            dado1 = dado;
-            posicaoreal = dados.indexOf(dado);
-            dados.remove(dado);
-        } else {
-            posicaoreal = position;
-            dado1 = dados.get(posicaoreal);
-            dados.remove(position);
-        }
-        adapterRecycleView.notifyItemRemoved(posicaoreal);
-        adapterRecycleView.notifyItemRangeChanged(posicaoreal, dados.size());
-        mDatabaseReference.child(dado1.getAssinaturadata()).removeValue();
-        mprocurarInput.setText("");
-        ajustarNAss();
-        //save();
-        Toast.makeText(getApplicationContext(), "Dado removido.", Toast.LENGTH_SHORT).show();
+    public void onLongNoteClick(final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Deseja excluir o item?")
+                .setCancelable(false)
+                .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String procurando = mprocurarInput.getText().toString();
+                        AssinaturaDados dado1;
+                        int posicaoreal;
+                        if (!procurando.isEmpty()) {
+                            ArrayList<AssinaturaDados> novoArr = adapterRecycleView.novoArray();
+                            AssinaturaDados dado = novoArr.get(position);
+                            dado1 = dado;
+                            posicaoreal = dados.indexOf(dado);
+                            dados.remove(dado);
+                        } else {
+                            posicaoreal = position;
+                            dado1 = dados.get(posicaoreal);
+                            dados.remove(position);
+                        }
+                        adapterRecycleView.notifyItemRemoved(posicaoreal);
+                        adapterRecycleView.notifyItemRangeChanged(posicaoreal, dados.size());
+                        mDatabaseReference.child(dado1.getAssinaturadata()).removeValue();
+                        mprocurarInput.setText("");
+                        ajustarNAss();
+                        //save();
+                        Toast.makeText(getApplicationContext(), "Dado removido.", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Não", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
+
 
     private ArrayList<AssinaturaDados> loadFirebase() {
         mDatabaseReference.addValueEventListener(new ValueEventListener() {
